@@ -1,0 +1,38 @@
+Exercise 3
+
+Question 1
+Part A
+Part a.
+img = imread("el-capitan.png")
+typeof(img)
+imshow(convert(Array{Float32,3}, img))
+
+size(img)
+# (360, 640, 4)
+#first matrix is the R channel
+R = img[:,:,1]
+G = img[:,:,2]
+B = img[:,:,3]
+
+Part b.
+"""
+read_files_extract_channels -- Reads in image name, outputs variables.
+
+This function takes an input of the filename and loads the image file,
+displays it, and extracts the channels of luminance values.
+
+Args:
+   arg1 (int): Description of arg1
+   arg2 (str): Description of arg2
+
+Returns:
+   out (int): Description of returned value
+"""
+function read_files_extract_channels(filename)
+    img = imread(filename)
+    imshow(convert(Array{Float32,3}, img))
+    R = img[:,:,1]
+    G = img[:,:,2]
+    B = img[:,:,3]
+    return R, G, B
+end
