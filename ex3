@@ -3,16 +3,17 @@ Exercise 3
 Question 1
 Part A
 Part a.
+#reads in an image using the file name, save it in a new variable img
 img = imread("el-capitan.png")
-typeof(img)
-imshow(convert(Array{Float32,3}, img))
+typeof(img) #tells you the type of image that it is
+imshow(convert(Array{Float32,3}, img)) #shows the image
 
 size(img)
 # (360, 640, 4)
-#first matrix is the R channel
-R = img[:,:,1]
-G = img[:,:,2]
-B = img[:,:,3]
+
+R = img[:,:,1] #first matrix in img represent the Red channel, so I saved it to variable R
+G = img[:,:,2] #second matrix in img represents Green channel
+B = img[:,:,3] #third matrix in img represents Blue channel
 
 Part b.
 """
@@ -30,36 +31,96 @@ Returns:
    so R = Red channel, G = Green channel, B = Blue channel
 """
 function read_files_extract_channels(filename)
-    img = imread(filename)
-    imshow(convert(Array{Float32,3}, img))
-    R = img[:,:,1]
-    G = img[:,:,2]
-    B = img[:,:,3]
-    return (R, G, B)
+    img = imread(filename) #reads in the file name and saves it to a new variable, img
+    imshow(convert(Array{Float32,3}, img)) #shows the image
+    R = img[:,:,1] #saves the first matrix as the Red channel into variable
+    G = img[:,:,2] #saves the second matrix as the Green channel into variable G
+    B = img[:,:,3] #saves the thrid matrix as the Blue channel into variable B
+    return (R, G, B) #returns all three channel matrices
 end
 
 Part c. added bug
 println("BUG BUG BUG")
 
 Part d.
-println("Reset with git rest --mixed")
+println("Reset with git rest --mixed") #debugged in GitKraken using mixed reset
 
 Part e.
+#created an empty array of zeros of the same size as the original image in order
+#to be able to store values from the original in it
 image2 = zeros(Float64, 360, 640, 3)
-image2[:,:,1] = img[:, :, 2]
-image2[:,:,2] = img[:, :, 3]
-image2[:,:,3] = img[:, :, 1]
-image2
+
+image2[:,:,1] = img[:, :, 2] #the first matrix of image2 equals the second (Green) matrix of original image
+image2[:,:,2] = img[:, :, 3] #the second matrix of image2 equals the third (Blue) matrix of original image
+image2[:,:,3] = img[:, :, 1] #the third matrix of image2 equals the first (Red) matrix of original image
+
+image2 #this just returns the completed new image2, I just wrote this line to check
+#the image by itself
 
 
+#created the figure size to be large enough to view both the images
 figure(figsize=[10, 10])
+subplot(1,2,1) #created a subplot on the left that contains the Original Image
+imshow(img) #shows the image
+title("Original Image") #title's the image
+axis("off") #turns the axis off so it just shows the image
 
+subplot(1,2,2) #created a subplot on the right that contains Image2
+imshow(image2) #shows image2 in that subplot
+title("Inverse Color Image") #titles Image2
+axis("off") #turns axis off
+
+Part B.
+"""
+circle_pixls -- circulates rows of pixels.
+
+This function reads in an image and how much to shift the rows of pixels up by.
+You want to make a copy of the image so that you're not mutating your original
+file. Then create the red channel by only indexing the first matrix of the image.
+The output is the inversed row image.
+
+Args:
+   arg1 (str): the image name is inputed
+   arg2 (int): the shift is the number to shift or circulate the rows
+
+Returns:
+   out (imshow): This returns the image of with the new shifted pixels.
+"""
+function circle_pixls(image, shift)
+    copyimg = copy(image) #copy the image so it doesn't mutate the original image
+    redc = copyimg[:, :, 1] #use this copy to create red channel, named redc
+    for i = 1:shift #here I created a for loop that goes from 1:number of shiting
+        #this will dictate how many times to move up the rows, which is carried
+        #out in the next for loop
+        for j = 1:size(redc)[1]-1 #here I had to index from 1:end-1 because when
+        #it reaches the end, there is no 361 index to put into the new 360 row index
+            oldFirstRow = redc[1,:] #stores the first row in variable oldFirstRow
+            #in order to save it to put in at the last slot, aka circulating
+            #the first row to the last row
+            redc[j,:] = redc[j+1,:] #this moves all the rows up one row by taking
+            #for example 1+1=2 so row two and now saving it as row 1 of redc
+            redc[end, :] = oldFirstRow #this then saves the first row into the
+            #last row, or end, to complete the circulation
+        end
+    end
+    copyimg[:,:,1] = redc #here I just save the new red channel that has been
+    #circulated to the copyimg
+    return(imshow(convert(Array{Float32, 3}, copyimg))) #returns the new circulated
+    #picture by using imshow()
+end
+#calls the function and I use the original image, which I saved as img, and
+#circulated/shifted it by 180 pixels/rows
+circle_pixls(img, 180)
+
+#following the same logic as before, I print out the original image and the new
+#circulated red channel image
+figure(figsize=[10, 10])
 subplot(1,2,1)
 imshow(img)
 title("Original Image")
 axis("off")
 
 subplot(1,2,2)
-imshow(image2)
-title("Inverse Color Image")
-axis("off");
+circle_pixls(img, 180)
+title("Image with Circulated Pixels")
+axis("off")
