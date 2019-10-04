@@ -21,12 +21,13 @@ read_files_extract_channels -- Reads in image name, outputs variables.
 This function takes an input of the filename and loads the image file,
 displays it, and extracts the channels of luminance values.
 
-Args:
-   arg1 (int): Description of arg1
-   arg2 (str): Description of arg2
+Arguments:
+   arg1 (str): string representing file name
 
 Returns:
-   out (int): Description of returned value
+   out (matrix): This function returns the three channels, each a matri of
+   360X640. Each matrix is labeled according to it's respective color;
+   so R = Red channel, G = Green channel, B = Blue channel
 """
 function read_files_extract_channels(filename)
     img = imread(filename)
@@ -34,5 +35,31 @@ function read_files_extract_channels(filename)
     R = img[:,:,1]
     G = img[:,:,2]
     B = img[:,:,3]
-    return R, G, B
+    return (R, G, B)
 end
+
+Part c. added bug
+println("BUG BUG BUG")
+
+Part d.
+println("Reset with git rest --mixed")
+
+Part e.
+image2 = zeros(Float64, 360, 640, 3)
+image2[:,:,1] = img[:, :, 2]
+image2[:,:,2] = img[:, :, 3]
+image2[:,:,3] = img[:, :, 1]
+image2
+
+
+figure(figsize=[10, 10])
+
+subplot(1,2,1)
+imshow(img)
+title("Original Image")
+axis("off")
+
+subplot(1,2,2)
+imshow(image2)
+title("Inverse Color Image")
+axis("off");
